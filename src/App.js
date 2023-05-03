@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import TasksPage from './components/TaskPage';
+import { useSelector, useDispatch } from 'react-redux';
 
-function App() {
+const App = (props) => {
+  const tasks = useSelector((state) => state.tasks.tasks);
+
+  const dispatch = useDispatch();
+
+  const onCreateTask = ({ title, description }) => {
+    dispatch({ type: 'tasks/createTask', payload: { title, description } });
+  };
+
+  const onStatusChange = ({ id, status }) => {
+    console.log(`id: ${id} status: ${status}`);
+    dispatch({ type: 'tasks/editTask', payload: { id, status } });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="main-content">
+      <TasksPage
+        tasks={tasks}
+        onCreateTask={onCreateTask}
+        onStatusChange={onStatusChange}
+      />
     </div>
   );
-}
+};
 
 export default App;
