@@ -1,8 +1,12 @@
-import express from 'express';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+const { expressMiddleware } = require('apollo-server-express');
+require('dotenv').config();
+
+const db = require('./db');
+
+const port = process.env.PORT || 4000;
+const DB_HOST = process.env.DB_HOST || 'mongodb://localhost:27017/sharpway';
 
 let tasks = [
   {
@@ -18,8 +22,6 @@ let tasks = [
     status: 'In Progress',
   },
 ];
-
-const port = process.env.PORT || 4000;
 
 const typeDefs = `#graphql
   type Task {
@@ -59,11 +61,17 @@ const resolvers = {
 
 const app = express();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+db.connect(DB_HOST);
 
-await server.start();
+async function startServer() {
+  const server = new ApolloServer({ typeDefs, resolvers });
+  await server.start();
+  server.applyMiddleware({ app, path: '/api' });
+}
 
-app.use('/api', cors(), bodyParser.json(), expressMiddleware(server));
+startServer();
+
+// app.use('/api', cors(), bodyParser.json(), expressMiddleware(server));
 
 app.listen({ port }, () =>
   console.log(`GraphQL Server running at http://localhost:${port}/api`)
