@@ -2,6 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { expressMiddleware } = require('apollo-server-express');
 require('dotenv').config();
+const models = require('./models');
 
 const db = require('./db');
 
@@ -32,29 +33,65 @@ const typeDefs = `#graphql
   }
   type Query {
     tasks: [Task!]!
+    task(id: ID): Task
   }
   type Mutation {
     newTask(
         title: String!
         description: String!
     ): Task!
+    updateTask(
+      id: ID!
+      title: String!
+      description: String!
+      status: String!
+    ): Task!
+    deleteTask(id: ID!): Boolean!
   }
 `;
 
 const resolvers = {
   Query: {
-    tasks: () => tasks,
+    tasks: async () => {
+      return await models.Task.find();
+    },
+    task: async (parent, args) => {
+      return await models.Task.findById(args.id);
+    },
   },
   Mutation: {
-    newTask: (parent, args) => {
-      let taskValue = {
-        id: String(tasks.length + 1),
+    newTask: async (parent, args) => {
+      return await models.Task.create({
         title: args.title,
         description: args.description,
         status: 'Unstarted',
-      };
-      tasks.push(taskValue);
-      return taskValue;
+      });
+    },
+    deleteTask: async (parent, { id }) => {
+      try {
+        await models.Task.findOneAndRemove({ _id: id });
+        return true;
+      } catch (err) {
+        console.error('Error: ', err);
+        return false;
+      }
+    },
+    updateTask: async (parent, { title, id, description, status }) => {
+      return await models.Task.findOneAndUpdate(
+        {
+          _id: id,
+        },
+        {
+          $set: {
+            title,
+            description,
+            status,
+          },
+        },
+        {
+          new: true,
+        }
+      );
     },
   },
 };
