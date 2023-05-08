@@ -5,10 +5,12 @@ import {
   createTask,
   deleteTask,
   fetchAllTasks,
+  editTask,
 } from './features/tasks/tasksSlice';
 
 const App = (props) => {
   const tasks = useSelector((state) => state.tasks.tasks);
+  const isLoading = useSelector((state) => state.tasks.isLoading);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,7 +26,8 @@ const App = (props) => {
 
   const onStatusChange = ({ id, status }) => {
     console.log(`id: ${id} status: ${status}`);
-    dispatch({ type: 'tasks/editTask', payload: { id, status } });
+    // dispatch({ type: 'tasks/editTask', payload: { id, status } });
+    dispatch(editTask({ id, status }));
   };
 
   const onDeleteTask = ({ id }) => {
@@ -39,6 +42,7 @@ const App = (props) => {
         onCreateTask={onCreateTask}
         onStatusChange={onStatusChange}
         onDeleteTask={onDeleteTask}
+        isLoading={isLoading}
       />
     </div>
   );

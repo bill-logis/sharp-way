@@ -34,6 +34,27 @@ export const DEL_TASK = gql`
   }
 `;
 
+export const EDIT_TASK = gql`
+  mutation EDITTASK(
+    $id: ID!
+    $title: String!
+    $description: String!
+    $status: String!
+  ) {
+    updateTask(
+      id: $id
+      title: $title
+      description: $description
+      status: $status
+    ) {
+      id
+      title
+      description
+      status
+    }
+  }
+`;
+
 export const fetchTasks = () => {
   return client.query({
     query: FETCH_TASKS,
@@ -57,6 +78,19 @@ export const removeTask = (id) => {
     mutation: DEL_TASK,
     variables: {
       id: id,
+    },
+  });
+};
+
+export const updateTask = (task) => {
+  console.log('title', task.title);
+  return client.mutate({
+    mutation: EDIT_TASK,
+    variables: {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      status: task.status,
     },
   });
 };

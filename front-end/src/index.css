@@ -106,3 +106,10 @@ hr {
   padding: 5px;
   padding-right: 10px;
 }
+
+.tasks-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
