@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import TasksPage from './components/TaskPage';
 import { useSelector, useDispatch } from 'react-redux';
-import { createTask, fetchAllTasks } from './features/tasks/tasksSlice';
+import {
+  createTask,
+  deleteTask,
+  fetchAllTasks,
+} from './features/tasks/tasksSlice';
 
 const App = (props) => {
   const tasks = useSelector((state) => state.tasks.tasks);
@@ -23,12 +27,18 @@ const App = (props) => {
     dispatch({ type: 'tasks/editTask', payload: { id, status } });
   };
 
+  const onDeleteTask = ({ id }) => {
+    console.log('delete task clicked:', id);
+    dispatch(deleteTask({ id }));
+  };
+
   return (
     <div className="main-content">
       <TasksPage
         tasks={tasks}
         onCreateTask={onCreateTask}
         onStatusChange={onStatusChange}
+        onDeleteTask={onDeleteTask}
       />
     </div>
   );

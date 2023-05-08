@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, gql, useMutation } from '@apollo/client';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 export const client = new ApolloClient({
   uri: 'http://localhost:4000/api',
@@ -28,6 +28,12 @@ export const ADD_TASK = gql`
   }
 `;
 
+export const DEL_TASK = gql`
+  mutation DelTask($id: ID!) {
+    deleteTask(id: $id)
+  }
+`;
+
 export const fetchTasks = () => {
   return client.query({
     query: FETCH_TASKS,
@@ -42,6 +48,15 @@ export const newTask = (title, description, status = 'Unstarted') => {
     variables: {
       title: title,
       description: description,
+    },
+  });
+};
+
+export const removeTask = (id) => {
+  return client.mutate({
+    mutation: DEL_TASK,
+    variables: {
+      id: id,
     },
   });
 };

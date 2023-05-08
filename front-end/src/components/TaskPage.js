@@ -52,6 +52,7 @@ class TasksPage extends Component {
           status={status}
           tasks={statusTasks}
           onStatusChange={this.props.onStatusChange}
+          onDeleteTask={this.props.onDeleteTask}
         />
       );
     });

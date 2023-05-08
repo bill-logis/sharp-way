@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { newTask, fetchTasks } from '../../api';
+import { newTask, removeTask, fetchTasks } from '../../api';
 
 const initialState = {
   tasks: [],
@@ -12,26 +12,10 @@ export function uniqueId() {
   return _id++;
 }
 
-function generate_uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var uuid = (Math.random() * 16) | 0,
-      v = c == 'x' ? uuid : (uuid & 0x3) | 0x8;
-    return uuid.toString(16);
-  });
-}
-
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // createTask: (state, action) => {
-    //   state.tasks.push({
-    //     id: generate_uuidv4(),
-    //     title: action.payload.title,
-    //     description: action.payload.description,
-    //     status: 'Unstarted',
-    //   });
-    // },
     editTask: (state, action) => {
       return {
         tasks: state.tasks.map((task) => {
@@ -59,6 +43,11 @@ export const tasksSlice = createSlice({
         tasks: state.tasks.concat(action.payload.newTask),
       };
     });
+    builder.addCase(deleteTask.fulfilled, (state, action) => {
+      return {
+        tasks: state.tasks.filter((task) => task.id !== action.meta.arg.id),
+      };
+    });
   },
 });
 
@@ -77,6 +66,14 @@ export const createTask = createAsyncThunk(
     console.log('action', action);
     const response = await newTask(action.title, action.description);
     console.log('response', response);
+    return response.data;
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  'tasks/deleteTask',
+  async (action, payload) => {
+    const response = await removeTask(action.id);
     return response.data;
   }
 );
