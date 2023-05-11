@@ -5,12 +5,15 @@
   "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "compile": "tsc",
+    "start": "npx nodemon ./src/app.ts"
   },
   "author": "Bill Ward",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.7.1",
+    "@types/mongoose": "^5.11.97",
     "apollo-server-express": "^3.12.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -20,6 +23,10 @@
     "graphql": "^16.6.0",
     "mongoose": "^7.1.0",
     "nodemon": "^2.0.22",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.1"
   }
 }
