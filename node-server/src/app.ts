@@ -2,6 +2,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import * as dotenv from 'dotenv';
 import Task, { ITask } from "./models/task";
+import Project, { IProject } from "./models/project" ;
 import { connect } from "./db";
 
 dotenv.config()
@@ -18,23 +19,35 @@ const typeDefs = `#graphql
     title: String!
     description: String!
     status: String!
+    projectId: String!
+  }
+  type Project {
+    id: ID!
+    name: String!
   }
   type Query {
     tasks: [Task!]!
     task(id: ID): Task
+    projects: [Project!]!
+    project(id: ID): Project
   }
   type Mutation {
     newTask(
         title: String!
         description: String!
+        projectId: String!
     ): Task!
     updateTask(
       id: ID!
       title: String!
       description: String!
       status: String!
+      projectId: String!
     ): Task!
     deleteTask(id: ID!): Boolean!
+    newProject(
+      name: String!
+    ): Project!
   }
 `;
 
@@ -46,13 +59,24 @@ const resolvers = {
     task: async (id: ITask['id']) => {
       return await Task.findById(id);
     },
+    projects: async () => {
+      return await Project.find();
+    },
+    project: async (id: IProject['id']) => {
+      return await Project.findById(id);
+    }
   },
   Mutation: {
-    newTask: async (parent: ITask, args: {title: string, description: string}) => {
+    newTask: async (parent: ITask, args: {
+      title: string, 
+      description: string, 
+      projectId: string
+    }) => {
       return await Task.create({
         title: args.title,
         description: args.description,
         status: 'Unstarted',
+        projectId: args.projectId,
       });
     },
     deleteTask: async (parent: Boolean, args: {id: string}) => {
@@ -74,6 +98,7 @@ const resolvers = {
             title: task.title,
             description: task.description,
             status: task.status,
+            projectId: task.projectId,
           },
         },
         {
@@ -81,6 +106,11 @@ const resolvers = {
         }
       );
     },
+    newProject: async (parent: IProject, args: {name: string}) => {
+      return await Project.create({
+        name: args.name,
+      });
+    }
   },
 };
 

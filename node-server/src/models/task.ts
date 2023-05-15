@@ -5,6 +5,7 @@ export interface ITask extends Document {
   title: string;
   description: string;
   status: string;
+  projectId: string;
 }
 
 const taskSchema = new Schema(
@@ -21,6 +22,10 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    projectId: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,
