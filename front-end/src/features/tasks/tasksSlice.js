@@ -70,6 +70,10 @@ function getTaskById(tasks, id) {
   return tasks.find((task) => task.id === id);
 }
 
+export function getTasksByProjectId(tasks, projectId) {
+  return tasks.find((task) => tasks.projectId === projectId);
+}
+
 export const editTask = createAsyncThunk(
   'tasks/editTask',
   async (dispatch, thunkAPI) => {

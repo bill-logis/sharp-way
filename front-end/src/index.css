@@ -113,3 +113,8 @@ hr {
   align-items: center;
   height: 100vh;
 }
+
+.project-item {
+  padding: 25px;
+  padding-left: 20px;
+}

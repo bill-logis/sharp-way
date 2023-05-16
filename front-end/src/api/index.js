@@ -13,6 +13,17 @@ export const FETCH_TASKS = gql`
       title
       description
       status
+      projectId
+    }
+  }
+`;
+
+export const FETCH_PROJECTS = gql`
+  #graphql
+  {
+    projects {
+      id
+      name
     }
   }
 `;
@@ -58,6 +69,12 @@ export const EDIT_TASK = gql`
 export const fetchTasks = () => {
   return client.query({
     query: FETCH_TASKS,
+  });
+};
+
+export const fetchProjects = () => {
+  return client.query({
+    query: FETCH_PROJECTS,
   });
 };
 
